@@ -10,12 +10,10 @@ const svg = d3
 let puntos = []
 
 function getRandomInt() {
-    return Math.floor(Math.random() * 35);
+  return Math.floor(Math.random() * 35);
 }
 
-for (let i = 0; i < 20; i ++) {
-    puntos.push([10 + i * 50, 10 + getRandomInt() * i])
-}
+puntos = Array(20).fill(0).map((d, i) => [10 + i * 50, 10 + getRandomInt() * i])
 
 svg
    .selectAll("circle")
