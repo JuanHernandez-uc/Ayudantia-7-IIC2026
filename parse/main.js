@@ -4,7 +4,7 @@ const linkDataset = ('https://gist.githubusercontent.com/Hernan4444/' +
 function estudiarDatos(data) {
     //console.log(data);                        //data es un array de objetos
     //console.log(data.columns);                //Nos las llaves de los objetos
-    //for (let i = 0; i < 10; i ++) {
+    //for (let i = 0; i < 10; i ++) {           //Usamos for solamente para explorar los datos
         //console.log(data[i]);                     //Imprimimos el objeto, nos muestra los nombres de sus atributos y valores
         //console.log(data[i].Artist);              //Acceder al nombre del objeto
         //console.log(data[i]["BirthYear"]);        //Otra forma de acceder a los atributos
@@ -39,6 +39,8 @@ function parseCategory(d) {
         Nacionality: d.Nacionality,
         TotalArtwork: d.TotalArtwork,
     }
+
+    data["edad"] = 30
     
     return data
 }
@@ -51,12 +53,12 @@ d3.csv(linkDataset)                           //Función que lee el csv y retorn
     .catch(error => {console.log(error)});      //Si la promesa no se cumple, muestra el error que causó el problema
 
 function estudiarDatos_2(data) {
-    //console.log(data[0]["¿Cuanto le gusta los siguientes tipos de visualización?"
-    //                    +" [Visualizaciones interactivas (para usar el mouse y realizar acciones)]"])
+    console.log(data[0]["¿Cuanto le gusta los siguientes tipos de visualización?"
+                        +" [Visualizaciones interactivas (para usar el mouse y realizar acciones)]"])
     
     //No queremos acceder de esta manera a los atributos, queremos un acceso mas simple como en el caso anterior
     //¿Que se podría hacer?
-
+    //console.log(data[0]["gustoInteractivas"])
     //console.log(data)
     //console.log(data.columns)
     
@@ -69,7 +71,7 @@ function estudiarDatos_2(data) {
     // Veamos si alguien seleccionó 1, 2 o 5 en la foto de la marraqueta
 
     //let agrupado = d3.rollup(data, v => d3.count(v, d => d.numeroMarraqueta), d => d.numeroMarraqueta)
-    //console.log(agrupado)           // Curioso
+    //console.log(agrupado)                   // Curioso, en clase se verá con calma
 
     // Veamos ahora el maximo de completos que se ha comido una persona
     // Importancia de que los atributo sean ints (+)

@@ -86,16 +86,36 @@ const tablero = tableroSinColor.map(d => {
     return copy;
 })
 
+// Después de definir nuestro dataset, definimos el svg y las escalas
+
 const WIDTH = 640;
 const HEIGHT = 640;
 
-const escalaX = d3.scaleLinear()
-    .domain([0, 8])
-    .range([0, WIDTH]);
+// const svg = d3                                   // Definimos nuestro svg
+//     .select("body")                              // Seleccionamos el tag body de html
+//     .append("svg")                               // Le agregamos un svg al body
+//     .attr("width", WIDTH)                        // Le agregamos el ancho al svg
+//     .attr("height", HEIGHT)                      // Le agregamos la altura al svg
+//     .style("border", "1px solid black");         // Le agregamos un borde al svg
 
-const escalaY = d3.scaleLinear()
+// Definimos dos escalas lineales, una para la coordenada x, y otra para la coordenada y.
+// Una escala lineal, mapea mediante una función f(x) = mx + n, los elementos del dominio al 
+// recorrido que definamos. En este caso, la función que ocupa es f(x) = 80x.
+// Mas informació en https://observablehq.com/@d3/d3-scalelinear
+
+const escalaX = d3.scaleLinear()            // Definimos la escala con d3.scaleLinear()        
+    .domain([0, 8])                         // Definimos el dominio de la escala (los valores a mapear)
+    .range([0, WIDTH]);                     // Definimos el rango de la escala (los valores mapeados)
+
+const escalaY = d3.scaleLinear()            // Se repite el mismo proceso de antes
     .domain([0, 8])
     .range([HEIGHT, 0]);
+
+// Podemos hacer lo mismo pero ocupado scaleBand(), es decir una escala de bandas. 
+// Retorna el inicio de la banda, y podemos acceder a escalaX.bandwidth() para saber el ancho de cada barra
+// Podriamos definir atributos adicionales como padding o step.
+// Mas informacion en https://observablehq.com/@d3/d3-scaleband
+
 
 // const escalaX = d3.scaleBand()
 //     .domain([0, 1, 2, 3, 4, 5, 6, 7])
@@ -105,6 +125,13 @@ const escalaY = d3.scaleLinear()
 //     .domain([0, 1, 2, 3, 4, 5, 6, 7])
 //     .range([HEIGHT, 0]);
 
+// Por otro lado, definimos escalas ordinales para el color de las casillas, las piezas y 
+// los códigos unicode de las piezas. d3.scaleOrdinal() realiza un mapeo 1 a 1 entre los elementos
+// Por ejemplo, si nuestro dominio es ["tierra", "aire", "fuego"] y nuestro rango es ["green", "blue", "red"]
+// El mapeo será:
+// tierra -> green
+// aire -> blue
+// fire -> red
 
 const colorCasillas = d3.scaleOrdinal()
     .domain(["C", "O"])
@@ -118,38 +145,43 @@ const codigoPiezas = d3.scaleOrdinal()
     .domain(["K", "Q", "A", "C", "T", "P", null])
     .range(["\u2654", "\u2655", "\u2657", "\u2658", "\u2656", "\u2659", ""])
 
-const svg = d3
-    .select("body")
-    .append("svg")
-    .attr("width", WIDTH)
-    .attr("height", HEIGHT)
-    .style("border", "1px solid black");
+// Definimos el ancho y altura de las casillas
 
 const anchoCasilla = (WIDTH) / 8
 const alturaCasilla = (HEIGHT) / 8
 
-svg
-    .selectAll("rect")
-    .data(tablero)
-    .join("rect")
-    .attr("x", d => escalaX(d.X))
-    .attr("y", d => escalaX(d.Y))
-    .attr("fill", d => colorCasillas(d.colorCasilla))
-    .attr("width", anchoCasilla)
-    .attr("height", anchoCasilla)
+// Realizamos el data join
 
-svg
-    .selectAll("text")
-    .data(tablero)
-    .join("text")
-    .attr("x", d => escalaX(d.X) + (anchoCasilla / 2))
-	.attr("y", d => escalaY(d.Y) - (alturaCasilla / 2))
-    .attr("fill", d => colorPiezas(d.color))
-    .text(d => codigoPiezas(d.pieza))
-    .style("font-size", "60px")
-    .style("text-anchor", "middle")   
-    .style("dominant-baseline", "mathematical")
+// svg
+//     .selectAll("rect")                                  
+//     .data(tablero)
+//     .join("rect")
+//     .attr("x", d => escalaX(d.X))                           // El atributo x del rect lo entrega la escala al procesar el d.X
+//     .attr("y", d => escalaX(d.Y))                           // El atributo y del rect lo entrega la escala al procesar el d.Y
+//     .attr("fill", d => colorCasillas(d.colorCasilla))       // La escala ordinal de color, entrega el color para cada casilla
+//     .attr("width", anchoCasilla)                            // Asignamos el ancho de cada casilla
+//     .attr("height", anchoCasilla)                           // Asignamos la altura de cada casilla
 
+// svg
+//     .selectAll("text")
+//     .data(tablero)
+//     .join("text")
+//     .attr("x", d => escalaX(d.X) + (anchoCasilla / 2))          //Desplazamos la coordenada X a la mitad de la casilla
+//     .attr("y", d => escalaY(d.Y) - (alturaCasilla / 2))         //Desplazamos la coordenada Y a la mitad de la casilla
+//     .attr("fill", d => colorPiezas(d.color))                    //Le asignamos color a las piezas
+//     .text(d => codigoPiezas(d.pieza))                           //Asignamos el texto que tendra cada pieza (unicode)
+//     .style("font-size", "60px")                                 //Agrandamos cada pieza
+//     .style("text-anchor", "middle")                             //Ubicamos la pieza al medio de su coordenada X
+//     .style("dominant-baseline", "mathematical")                 //Ubicamos la pieza al medio de su coordenada Y
+
+// atributo text-anchor: https://developer.mozilla.org/en-US/docs/Web/SVG/Attribute/text-anchor
+// atributo dominant-baseline: https://developer.mozilla.org/en-US/docs/Web/SVG/Attribute/text-anchor
+// Notar que este estilo siempre se aplica en todos los textos presentes en el código 
+// Por lo que una buena practica es mandarlo a CSS
+
+
+// Si se eligen las escalas de bandas tenemos que hacer unos ligeros cambios cuando hagamos el join
+// Especificamente, ocupamos el bandwidth() en vez de el anchoCasilla y alturaCasilla
 
 // svg
 //     .selectAll("rect")

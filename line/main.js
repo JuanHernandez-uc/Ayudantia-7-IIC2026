@@ -33,7 +33,7 @@ const linea = d3.line();
 // linea.curve(d3.curveMonotoneY)
 // linea.curve(d3.curveNatural)
 // linea.curve(d3.curveStep)
-
+//http://bl.ocks.org/d3indepth/b6d4845973089bc1012dec1674d3aff8
 console.log(linea(puntos))
 
 svg
